@@ -1,0 +1,222 @@
+<title>提出提案</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">提案操作</a>
+        <a><cite>提出提案</cite></a>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div style="padding-bottom: 10px;">
+                <!-- <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button> -->
+                <button class="layui-btn layuiadmin-btn-list" data-type="add">提出提案</button>
+            </div>
+            <table id="proposal-table" lay-filter="proposal-table"></table>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="buttonStepTpl">
+    {{#  if(d.step == 1){ }}
+    <button class="layui-btn layui-btn-primary layui-btn-xs"><i class="layui-icon">&#xe6b2;</i>提出提案</button>
+    {{#  } else if(d.step == 2) { }}
+    <button class="layui-btn  layui-btn-warm layui-btn-xs"><i class="layui-icon">&#xe679;</i>审批完成</button>
+    {{#  } else if(d.step == 3) { }}
+    <button class="layui-btn layui-btn-normal layui-btn-xs"><i class="layui-icon">&#xe66e;</i>签发完成</button>
+    {{#  } else if(d.step == 4) { }}
+    <button class="layui-btn layui-btn-normal layui-btn-xs"><i class="layui-icon">&#xe672;</i>审核通过</button>
+    {{#  } else if(d.step == 5) { }}
+    <button class="layui-btn layui-btn layui-btn-xs"><i class="layui-icon">&#xe66c;</i>处理完成</button>
+    {{#  } else if(d.step == 6) { }}
+    <button class="layui-btn  layui-btn-xs"><i class="layui-icon">&#xe6c6;</i>完成提案</button>
+    {{#  } }}
+</script>
+<script type="text/html" id="buttonStatusTpl">
+    {{#  if(d.status == 1){ }}
+    <button class="layui-btn  layui-btn-xs"></i>立案</button>
+    {{#  } else if(d.status == 2) { }}
+    <button class="layui-btn  layui-btn-normal layui-btn-xs"></i>建议</button>
+    {{#  } else if(d.status == 3) { }}
+    <button class="layui-btn layui-btn-danger layui-btn-xs"></i>无效</button>
+    {{#  } else if(d.status == 0) { }}
+    <button class="layui-btn layui-btn-primary layui-btn-xs"></i>待审</button>
+    {{#  } }}
+</script>
+<script type="text/html" id="table-proposal-list">
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>查看</a>
+</script>
+<script>
+    //layui.use(['admin',  'table', 'yyer','proTable'], function () {
+    layui.use('proTable', layui.factory('proTable')).use(['admin', 'proTable', 'table', 'yyer'], function () {
+        var $ = layui.$,
+            admin = layui.admin,
+            view = layui.view,
+            table = layui.table,
+            form = layui.form,
+            yyer = layui.yyer,
+            proTable = layui.proTable;
+
+        var openProposalShowWindows = function (data) {
+            let title = '河南大学 ' + data.periodEntity.periodNum + data.orderEntity.orderNum + '教职工代表大会提案表'
+            if (data.disposeproposalEntity) title += data.disposeproposalEntity.dPnumber;
+
+            yyer.open({
+                title: title,
+
+                id: 'disposeProposalShow' // + data.pId  //如果想打开多个提案窗口 ，取消注释即可，但是form会因为name相同出现点问题
+                    ,
+                success: function (layero, index) {
+                    data.layerid = this.id;
+                    view(this.id).render('windows/proposalWin', data).done(function () {
+                        form.render();
+                    });
+                },
+                cancel: function (index, layero) {
+                    
+                    proTable.reload("proposal-table");
+                    layer.close(index)
+                }
+            });
+        }
+
+        proTable.render({
+            elem: '#proposal-table',
+            url: './options/proposal',
+            title: '提案表',
+            text:{none:"您还没有在本届提出任何提案"},
+            cols: [
+                [{
+                    title: '提案表',
+                    colspan: 8,
+                    align: 'center'
+                }],
+                [{
+                    field: 'periodNum',
+                    title: '届',
+                    width: 80
+                }, {
+                    field: 'orderNum',
+                    title: '次',
+                    width: 80
+                }, {
+                    field: 'proName',
+                    title: '提案人',
+                    width: 100,
+                    align:'center'
+                }, {
+                    field: 'pName',
+                    title: '提案标题'
+                }, {
+                    field: 'pTime',
+                    title: '提出时间',
+                    width: 200
+                }, {
+                    field: 'status',
+                    title: '提案状态',
+                    templet: '#buttonStatusTpl',
+                    align: 'center',
+                    width: 100
+                }, {
+                    field: 'step',
+                    title: '提案流程',
+                    templet: '#buttonStepTpl',
+                    align: 'center',
+                    width: 120
+                }, {
+                    title: '操作',
+                    align: 'center',
+                    fixed: 'right',
+                    toolbar: '#table-proposal-list',
+                    width: 120
+                }]
+            ]
+        })
+
+        //监听工具条
+        table.on('tool(proposal-table)', function (obj) {
+            var data = obj.data;
+            let pId = data.pId;
+
+            if (obj.event === 'edit') {
+
+                openProposalShowWindows(data);
+            }
+        });
+
+        var active = {
+
+            //添加
+
+            add: function (othis) {
+                admin.req({
+                    url: './depart/allDepartAndAllProposer',
+                    type: "post",
+
+                    success: function (res) {
+
+                        if (res.code != 0) {
+                            return;
+                        }
+                        let data = {};
+                        data['allDepart'] = res.data['allDepart'];
+                        data['allProposer'] = res.data['allProposer'];
+                        data['proposerEntity'] = res.data['nowPorposer'];
+                        yyer.open({
+                            title: '发布提案',
+                            WID: 'creatProposalWin',
+                            success: function (layero, index) {
+                                layui.data.render = form.render();
+                                view(this.id).render('windows/proposalEditWin',
+                                    data).done(function () {
+                                    form.render();
+                                });
+                                //监听提交
+                                form.on('submit(form-edit-proposal)', function (
+                                    data) {
+                                    var field = data.field; //获取提交的字段
+                                    admin.req({
+                                        url: "./proposal/editProposal",
+                                        data: field,
+                                        type: "POST",
+                                        success: function (
+                                            res) {
+                                            if (res.code !=
+                                                0) {
+                                                return;
+                                            }
+                                            layer.msg(res
+                                                .msg, {
+                                                    icon: 1
+                                                });
+                                            table.reload(
+                                                "admin-proposal-list"
+                                            );
+                                            layer.close(
+                                                index);
+                                        }
+                                    })
+
+
+                                });
+
+                            },
+                            cancel: function (index, layero) {
+                                
+                                proTable.reload("proposal-table");
+                                layer.close(index)
+                            }
+                        })
+                    }
+                })
+            }
+        };
+
+        $('.layui-btn.layuiadmin-btn-list').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    })
+</script>

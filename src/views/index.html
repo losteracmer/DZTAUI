@@ -1,0 +1,34 @@
+
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <img src="./layui/images/logo/gonghui.png" />
+        
+    
+  </div>
+
+  <iframe name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=64" width="540" height="291" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+
+  <blockquote class="layui-elem-quote layui-quote-nm" id="welcome">
+      <script type="text/html" template lay-url="./user/getUserMsg">
+      {{# d.data = d.data||{}}}
+      
+        <h1>欢迎 {{ d.data.proName }} 登录系统</h1>
+    </script>
+  </blockquote>
+</div>
+
+<!-- <script src="../../layui/layui.js"></script> -->
+<script>
+
+  // layui.use(['layer'],function(){
+
+  //   let $ = layui.$;
+  //   layui.data()
+  //   // $("welcome").innerHtml = "欢迎您"
+
+  // })
+
+
+</script>
+

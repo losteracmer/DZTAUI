@@ -1,0 +1,74 @@
+<!-- <script type="text/html" template lay-done="layui.element.render('nav', 'layadmin-pagetabs-nav')"> -->
+<script type="text/html" template lay-done="layui.data.renderDate()">
+  <div class="layui-fluid">
+    <div class="layui-form" lay-filter="add-order-form" style="padding: 20px 30px 0 0;">
+      <div class="layui-form-item">
+        <label class="layui-form-label">届</label>
+        <div class="layui-input-inline">
+          <select name="periodId" id="periodSelect" lay-filter="periodSelect">
+            {{#  layui.each(d.params, function(index, item){ }}
+            <option value='{{item["periodId"]}}' selected> {{item["periodNum"]}} </option>
+            {{# }) }}
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">次名称</label>
+        <div class="layui-input-inline">
+          <input type="text" name="orderNum" value="" placeholder="例如：八次" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">开始时间</label>
+        <div class="layui-input-inline">
+          <input type="text" name="beginTime" value='' class="layui-input" id="beginTime"
+            placeholder="yyyy-MM-dd HH:mm:ss">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">结束时间</label>
+        <div class="layui-input-inline">
+          <input type="text" name="endTime" value='' class="layui-input" id="endTime" placeholder="yyyy-MM-dd HH:mm:ss">
+        </div>
+      </div>
+      <div style=" display:none!important;"><input type="text" name="orderId"
+        value="{{ d.params.orderId || 0 }}" disabled></div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline">
+          <input type="button" lay-submit lay-filter="LAY-user-back-submit" value="确认" class="layui-btn">
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+<script>
+  layui.data.renderDate = function () {
+    layui.use(['laydate'], function () {
+      let laydate = layui.laydate;
+      laydate.render({
+        elem: '#beginTime',
+        type: 'datetime',
+        theme: 'molv',
+
+      });
+      laydate.render({
+        elem: '#endTime',
+        type: 'datetime',
+        theme: 'molv',
+
+      });
+    })
+
+  }
+  layui.use(['admin', 'form'], function () {
+    var $ = layui.$,
+      form = layui.form,
+      laydate = layui.laydate;
+
+
+  });
+</script>

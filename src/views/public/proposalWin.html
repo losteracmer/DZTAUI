@@ -1,0 +1,311 @@
+<script type="text/html" template>
+  <div class="layui-fluid" id="proposalWin" data-layerid={{d.params.layerid}} data-pid={{d.params.pId}}>
+
+    <blockquote class="layui-elem-quote">{{d.params.pName}}</blockquote>
+    <!-- <div>{{JSON.stringify(d)}}</div> -->
+
+    <div class="layui-row">
+      <div class="layui-col-sm12"></div>
+
+      <table class="layui-table">
+        <!-- <colgroup>
+          <col width="190">
+          <col>
+        </colgroup> -->
+        <tbody>
+          <tr>
+            <th>提案人姓名</th>
+            <td>
+              {{d.params.proposerEntity.proName}}
+            </td>
+            <th>提案人单位</th>
+            <td>
+              {{d.params.proposerEntity.departEntity.departName}}
+            </td>
+            <td>提案人电话</td>
+            <td>
+              {{d.params.pTel}}
+            </td>
+          </tr>
+          <tr>
+            <td>附议人1</td>
+            <td>{{d.params.seconder == ""? "无":d.params.seconder}}</td>
+            <td>附议人2</td>
+            <td>{{d.params.threer  == ""? "无":d.params.threer}}</td>
+            <td>附议人3</td>
+            <td>{{d.params.other == 0? "无":d.params.other}}</td>
+          </tr>
+          <tr>
+            <td>附议人1单位</td>
+            <td>{{d.params.depart1 ? d.params.depart1.departName :"无"}}</td>
+            <td>附议人2单位</td>
+            <td>{{d.params.depart2 ? d.params.depart2.departName :"无"}}</td>
+            <td>附议人3单位</td>
+            <td>{{d.params.depart3 ? d.params.depart3.departName :"无"}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div class="layui-col-sm12">
+      <fieldset class="layui-elem-field">
+        <legend>提案理由</legend>
+        <div class="layui-field-box">
+          {{d.params.pContext}}
+        </div>
+      </fieldset>
+    </div>
+    <div class="layui-col-sm12">
+      <fieldset class="layui-elem-field">
+        <legend>建议与措施</legend>
+        <div class="layui-field-box">
+          {{d.params.pSolution}}
+        </div>
+      </fieldset>
+    </div>
+
+
+<!-- <hr>
+ 
+<hr class="layui-bg-red">
+
+<hr class="layui-bg-orange"> -->
+ 
+<hr class="layui-bg-green">
+ 
+<!-- <hr class="layui-bg-cyan">
+ 
+<hr class="layui-bg-blue">
+
+<hr class="layui-bg-black"> -->
+ 
+
+<hr class="layui-bg-gray">
+    {{# if(d.params.disposeproposalEntity != null ) { }}
+    <div class="layui-col-sm12">
+      <fieldset class="layui-elem-field">
+        <legend>提案工作委员会意见</legend>
+        <div class="layui-field-box">
+          <div class="layui-col-sm12">
+            <div class="layui-form">
+              <div class="layui-form-item">
+                <label class="layui-form-label">审批结果:</label>
+                <div class="layui-input-block">
+                  {{# if(d.params.disposeproposalEntity.dPidea == 1){ }}
+                  <input type="radio" name="dPidea" value="1" title="立案" checked="">
+                  <input type="radio" name="dPidea" value="2" title="建议" disabled="">
+                  <input type="radio" name="dPidea" value="3" title="无效" disabled="">
+                  {{# }else if(d.params.disposeproposalEntity.dPidea == 2){ }}
+                  <input type="radio" name="dPidea" value="1" title="立案" disabled="">
+                  <input type="radio" name="dPidea" value="2" title="建议" checked="">
+                  <input type="radio" name="dPidea" value="3" title="无效" disabled="">
+                  {{# }else{ }}
+                  <input type="radio" name="dPidea" value="1" title="立案" disabled="">
+                  <input type="radio" name="dPidea" value="2" title="建议" disabled="">
+                  <input type="radio" name="dPidea" value="3" title="无效" checked="">
+                  {{# } }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="layui-col-sm12 ">
+            <div class="layui-col-sm4 layui-col-sm-offset8" style="text-align:right;">
+              <!-- {{d.params.disposeproposalEntity.proposerEntity.departEntity.departName + ':'}} -->
+              提案工作委员会主任：
+              {{d.params.disposeproposalEntity.proposerEntity.proName}}
+              <br>
+              {{# var date = new Date(d.params.disposeproposalEntity.dPtime)}}
+              {{date.getFullYear() +'年' + (date.getMonth() +1) +'月' + date.getDate() + '日'}}
+            </div>
+
+          </div>
+
+
+        </div>
+      </fieldset>
+    </div>
+    {{# } }}
+    {{# if(d.params.ausstellungEntity != null ) { }}
+    <div class="layui-col-sm12">
+      <fieldset class="layui-elem-field">
+        <legend>校办意见</legend>
+        <div class="layui-field-box">
+          <div class="layui-col-sm12">
+
+            主办单位：{{ d.params.ausstellungEntity.departEntity1  ? d.params.ausstellungEntity.departEntity1.departName :"无 "}}
+            <br>
+            协办单位：{{ d.params.ausstellungEntity.departEntity2  ? d.params.ausstellungEntity.departEntity2.departName :"无" }}
+            {{ d.params.ausstellungEntity.departEntity3  ? ','+d.params.ausstellungEntity.departEntity3.departName :"" }}
+            {{ d.params.ausstellungEntity.departEntity4  ? ','+d.params.ausstellungEntity.departEntity4.departName :"" }}
+
+          </div>
+          <div class="layui-col-sm12 ">
+            <div class="layui-col-sm4 layui-col-sm-offset8" style="text-align:right;">
+              <!-- {{d.params.ausstellungEntity.proposerEntity.departEntity.departName + ':'}} -->
+              校办主任：
+              {{d.params.ausstellungEntity.proposerEntity.proName}}
+              <br>
+              {{# var date = new Date(d.params.ausstellungEntity.aTime)}}
+              {{date.getFullYear() +'年' + (date.getMonth() +1) +'月' + date.getDate() + '日'}}
+            </div>
+
+          </div>
+
+
+        </div>
+      </fieldset>
+    </div>
+    {{# } }}
+
+    {{# if(d.params.approvalEntity != null ) { }}
+    <div class="layui-col-sm12">
+      <fieldset class="layui-elem-field">
+        <legend>主管校领导</legend>
+        <div class="layui-field-box">
+          <div class="layui-col-sm12">
+            {{d.params.approvalEntity.avIdea==""?"同意审批":d.params.approvalEntity.avIdea}}
+          </div>
+          <div class="layui-col-sm12 ">
+            <div class="layui-col-sm4 layui-col-sm-offset8" style="text-align:right;">
+              <!-- {{d.params.approvalEntity.proposerEntity.departEntity.departName + ':'}} -->
+              主管校领导：
+              {{d.params.approvalEntity.proposerEntity.proName}}
+              <br>
+              {{# var date = new Date(d.params.approvalEntity.avTime)}}
+              {{date.getFullYear() +'年' + (date.getMonth() +1) +'月' + date.getDate() + '日'}}
+            </div>
+
+          </div>
+
+
+        </div>
+      </fieldset>
+    </div>
+    {{# } }}
+
+    {{# if(d.params.excuteproposalEntity != null ) { }}
+    <div class="layui-col-sm12">
+      <fieldset class="layui-elem-field">
+        <legend>承办单位办理意见</legend>
+        <div class="layui-field-box">
+          <div class="layui-col-sm12">
+            {{d.params.excuteproposalEntity.epIdea}}
+          </div>
+          {{# if(d.params.disposeproposalEntity.dPidea == 1) { }}
+          <div class="layui-col-sm12">
+            <div class="layui-form">
+              <div class="layui-form-item">
+                <label class="layui-form-label">办理结果:</label>
+                <div class="layui-input-block">
+
+                  {{# if(d.params.excuteproposalEntity.hrResult == 1){ }}
+                  <input type="radio" name="hrResult" value="1" title="已经落实" checked="">
+                  <input type="radio" name="hrResult" value="2" title="正在落实" disabled="">
+                  <input type="radio" name="hrResult" value="3" title="暂缓落实" disabled="">
+                  <input type="radio" name="hrResult" value="4" title="无法落实" disabled="">
+                  {{# }else if(d.params.excuteproposalEntity.hrResult == 2){ }}
+                  <input type="radio" name="hrResult" value="1" title="已经落实" disabled="">
+                  <input type="radio" name="hrResult" value="2" title="正在落实" checked="">
+                  <input type="radio" name="hrResult" value="3" title="暂缓落实" disabled="">
+                  <input type="radio" name="hrResult" value="4" title="无法落实" disabled="">
+                  {{# }else if(d.params.excuteproposalEntity.hrResult == 3){ }}
+                  <input type="radio" name="hrResult" value="1" title="已经落实" disabled="">
+                  <input type="radio" name="hrResult" value="2" title="正在落实" disabled="">
+                  <input type="radio" name="hrResult" value="3" title="暂缓落实" checked="">
+                  <input type="radio" name="hrResult" value="4" title="无法落实" disabled="">
+                  {{# }else if(d.params.excuteproposalEntity.hrResult == 4){ }}
+                  <input type="radio" name="hrResult" value="1" title="已经落实" disabled="">
+                  <input type="radio" name="hrResult" value="2" title="正在落实" disabled="">
+                  <input type="radio" name="hrResult" value="3" title="暂缓落实" disabled="">
+                  <input type="radio" name="hrResult" value="4" title="无法落实" checked="">
+                  {{# } }}
+                </div>
+              </div>
+            </div>
+          </div>
+          {{# } }}
+
+          <div class="layui-col-sm12 ">
+            <div class="layui-col-sm4 layui-col-sm-offset8" style="text-align:right;">
+              {{d.params.excuteproposalEntity.proposerEntity.departEntity.departName + ':'}}
+              {{d.params.excuteproposalEntity.proposerEntity.proName}}
+              <br>
+              {{# var date = new Date(d.params.excuteproposalEntity.epTime)}}
+              {{date.getFullYear() +'年' + (date.getMonth() +1) +'月' + date.getDate() + '日'}}
+            </div>
+
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    {{# } }}
+
+    {{# if(d.params.csiEntity != null && d.params.disposeproposalEntity && d.params.disposeproposalEntity.dPidea == 1 ) { }}
+    <div class="layui-col-sm12">
+      <fieldset class="layui-elem-field">
+        <legend>提案人反馈</legend>
+        <div class="layui-field-box">
+          <div class="layui-col-sm12">
+            {{d.params.csiEntity.csIdeclare}}
+          </div>
+          <div class="layui-col-sm12">
+            <div class="layui-form">
+              <div class="layui-form-item">
+                <label class="layui-form-label">代表评价:</label>
+                <div class="layui-input-block">
+                  {{# if(d.params.csiEntity.csi == 1){ }}
+                  <input type="radio" name="csi" value="1" title="非常满意" checked="">
+                  <input type="radio" name="csi" value="2" title="满意" disabled="">
+                  <input type="radio" name="csi" value="3" title="基本满意" disabled="">
+                  <input type="radio" name="csi" value="3" title="非常不满意" disabled="">
+                  {{# }else if(d.params.csiEntity.csi == 2){ }}
+                  <input type="radio" name="csi" value="1" title="非常满意" disabled="">
+                  <input type="radio" name="csi" value="2" title="满意" checked="">
+                  <input type="radio" name="csi" value="3" title="基本满意" disabled="">
+                  <input type="radio" name="csi" value="3" title="非常不满意" disabled="">
+                  {{# }else if(d.params.csiEntity.csi == 3){ }}
+                  <input type="radio" name="csi" value="1" title="非常满意" disabled="">
+                  <input type="radio" name="csi" value="2" title="满意" disabled="">
+                  <input type="radio" name="csi" value="3" title="基本满意" checked="">
+                  <input type="radio" name="csi" value="3" title="非常不满意" disabled="">
+                  {{# }else if(d.params.csiEntity.csi == 4){ }}
+                  <input type="radio" name="csi" value="1" title="非常满意" disabled="">
+                  <input type="radio" name="csi" value="2" title="满意" disabled="">
+                  <input type="radio" name="csi" value="3" title="基本满意" disabled="">
+                  <input type="radio" name="csi" value="3" title="非常不满意" checked="">
+                  {{# } }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="layui-col-sm12 ">
+            <div class="layui-col-sm4 layui-col-sm-offset8" style="text-align:right;">
+              {{d.params.proposerEntity.departEntity.departName + ':'}}
+              {{d.params.proposerEntity.proName}}
+              <br>
+              {{# var date = new Date(d.params.csiEntity.eTime)}}
+              {{date.getFullYear() +'年' + (date.getMonth() +1) +'月' + date.getDate() + '日'}}
+            </div>
+
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    {{# } }}
+  </div>
+  </div>
+  {{# var Win_Proposal_Data = d.params}}
+</script>
+<script>
+  layui.use(['admin', 'layer', 'yyer','proposalWin'], function () {
+    let $ = layui.$
+      ,admin = layui.admin
+      ,yyer = layui.yyer
+      ,view = layui.view
+      ,form = layui.form
+      // ,proposalWin = layui.proposalWin;
+
+
+    
+  })
+</script>

@@ -1,0 +1,132 @@
+
+<script type="text/html" template>
+    <link rel="stylesheet" href="{{ layui.setter.base }}style/bulletin.css?v={{ layui.admin.v }}-1" media="all">
+  </script>
+  
+  <div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md12">
+        <div class="layui-card">
+          
+          <div class="layui-card-body">
+  
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+              <legend>河南大学立案提案公告栏</legend>
+            </fieldset>
+            <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-content-list">
+              <div class="layui-form-item">
+                <!-- <div class="layui-inline">
+            <label class="layui-form-label">提案ID</label>
+            <div class="layui-input-inline">
+              <input type="text" name="pId" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+          </div> -->
+                <!-- 届 -->
+                <div class="layui-inline">
+                  <label class="layui-form-label">届</label>
+                  <div class="layui-input-inline">
+                    <select id="periodSelect" name="periodId" lay-search="" lay-verify="required"
+                      lay-filter="periodSelect">
+  
+                    </select>
+                  </div>
+                </div>
+                <!-- 次 -->
+                <div class="layui-inline">
+                  <label class="layui-form-label">次</label>
+                  <div class="layui-input-inline">
+                    <select id="orderSelect" name="orderId" lay-search="" lay-verify="required" lay-filter="orderSelect">
+  
+                    </select>
+                  </div>
+                </div>
+  
+                <div class="layui-inline">
+                  <label class="layui-form-label">提案人</label>
+                  <div class="layui-input-inline">
+                    <select name="proNum" id="proposerSelect" lay-search="" lay-verify="required"
+                      lay-filter="proposerSelect">
+  
+                    </select>
+                  </div>
+                </div>
+  
+                <div class="layui-inline">
+                  <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+  
+            <div class="layui-card-body">
+              <table id="admin-proposal-list" lay-filter="admin-proposal-list"></table>
+              <script type="text/html" id="buttonTpl">
+                {{#  if(d.step == 1){ }}
+                <button class="layui-btn layui-btn-primary layui-btn-xs"><i class="layui-icon">&#xe6b2;</i>提出提案</button>
+                {{#  } else if(d.step == 2) { }}
+                <button class="layui-btn  layui-btn-warm layui-btn-xs"><i class="layui-icon">&#xe679;</i>审批完成</button>
+                {{#  } else if(d.step == 3) { }}
+                <button class="layui-btn layui-btn-normal layui-btn-xs"><i class="layui-icon">&#xe66e;</i>签发完成</button>
+                {{#  } else if(d.step == 4) { }}
+                <button class="layui-btn layui-btn-normal layui-btn-xs"><i class="layui-icon">&#xe672;</i>审核通过</button>
+                {{#  } else if(d.step == 5) { }}
+                <button class="layui-btn layui-btn layui-btn-xs"><i class="layui-icon">&#xe66c;</i>处理完成</button>
+                {{#  } else if(d.step == 6) { }}
+                <button class="layui-btn  layui-btn-xs"><i class="layui-icon">&#xe6c6;</i>完成提案</button>
+                {{#  } }}
+              </script>
+              <script type="text/html" id="buttonStatusTpl">
+                {{#  if(d.status == 1){ }}
+                <button class="layui-btn  layui-btn-xs"></i>立案</button>
+                {{#  } else if(d.status == 2) { }}
+                <button class="layui-btn  layui-btn-normal layui-btn-xs"></i>建议</button>
+                {{#  } else if(d.status == 3) { }}
+                <button class="layui-btn layui-btn-danger layui-btn-xs"></i>无效</button>
+                {{#  } else if(d.status == 0) { }}
+                <button class="layui-btn layui-btn-primary layui-btn-xs"></i>待审核</button>
+                {{#  } }}
+              </script>
+              <script type="text/html" id="table-content-list">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+                    class="layui-icon layui-icon-edit"></i>查看</a>
+              </script>
+            </div>
+  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script id="templateOption" type="text/html">
+    {{#  layui.each(d.data, function(index, item){ }}
+    <option value='{{item[d.value]}}'>{{item[d.name]}}</option>
+    {{#  }); }}
+  </script>
+  <script>
+    layui.use('bulletin', layui.factory('bulletin')).use(['admin', 'bulletin', 'table', 'yyer'], function () {
+        var $ = layui.$,
+            admin = layui.admin,
+            view = layui.view,
+            table = layui.table,
+            form = layui.form,
+            yyer = layui.yyer;
+        form.render(null, 'app-content-list');
+  
+        //监听搜索
+        form.on('submit(LAY-app-contlist-search)', function (data) {
+            var field = data.field;
+            //执行重载
+            table.reload('admin-proposal-list', {
+                where: field,
+                page: {
+                    curr: 1
+                } //表格重载的时候要将page的初始页设为1，否则可能会因为页数过大，而显示没有相关数据，这是layui的锅
+            });
+        });
+  
+  
+  
+    });
+  </script>

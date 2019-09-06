@@ -1,0 +1,136 @@
+<script type="text/html" template>
+    <div class="layui-fluid">
+        <div class="layui-form" id="form-edit-excuteProposal" lay-filter="form-edit-excuteProposal"
+            style="padding: 20px 0 0 0;" data-pid={{d.params.pId}}>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">承办单位办理意见</label>
+                <div class="layui-input-block">
+                    {{# d.params.excuteproposalEntity =  d.params.excuteproposalEntity?d.params.excuteproposalEntity:{} }}
+                    <!-- //防止 空指针异常 -->
+
+                    <textarea name="epIdea" placeholder="请输入办理意见"
+                        class="layui-textarea">{{d.params.excuteproposalEntity.epIdea || ''}}</textarea>
+
+                </div>
+            </div>
+            {{# if(d.params.disposeproposalEntity.dPidea == 1){ }}
+            <div class="layui-form-item">
+                <label class="layui-form-label">办理结果</label>
+                <div class="layui-input-block">
+
+                        {{# if(d.params.excuteproposalEntity.hrResult == 1){ }}
+                        <input type="radio" name="excuteHrResult" value="1" title="已经落实" checked="">
+                        <input type="radio" name="excuteHrResult" value="2" title="正在落实" >
+                        <input type="radio" name="excuteHrResult" value="3" title="暂缓落实" >
+                        <input type="radio" name="excuteHrResult" value="4" title="无法落实" >
+                        {{# }else if(d.params.excuteproposalEntity.hrResult == 2){ }}
+                        <input type="radio" name="excuteHrResult" value="1" title="已经落实" >
+                        <input type="radio" name="excuteHrResult" value="2" title="正在落实" checked="">
+                        <input type="radio" name="excuteHrResult" value="3" title="暂缓落实" >
+                        <input type="radio" name="excuteHrResult" value="4" title="无法落实" >
+                        {{# }else if(d.params.excuteproposalEntity.hrResult == 3){ }}
+                        <input type="radio" name="excuteHrResult" value="1" title="已经落实" >
+                        <input type="radio" name="excuteHrResult" value="2" title="正在落实" >
+                        <input type="radio" name="excuteHrResult" value="3" title="暂缓落实" checked="">
+                        <input type="radio" name="excuteHrResult" value="4" title="无法落实" >
+                        {{# }else if(d.params.excuteproposalEntity.hrResult == 4){ }}
+                        <input type="radio" name="excuteHrResult" value="1" title="已经落实" >
+                        <input type="radio" name="excuteHrResult" value="2" title="正在落实" >
+                        <input type="radio" name="excuteHrResult" value="3" title="暂缓落实" >
+                        <input type="radio" name="excuteHrResult" value="4" title="无法落实" checked="">
+                        {{# }else{ }}
+                        <input type="radio" name="excuteHrResult" value="1" title="已经落实" >
+                        <input type="radio" name="excuteHrResult" value="2" title="正在落实" >
+                        <input type="radio" name="excuteHrResult" value="3" title="暂缓落实" >
+                        <input type="radio" name="excuteHrResult" value="4" title="无法落实" >
+                        {{# } }}
+                </div>
+            </div>
+            {{# } }}
+            {{# var type = layui.data(layui.setter.tableName)['type']; }}
+            {{# if(type.indexOf(1)>-1){ }}
+            <!-- //如果是管理身份，才给与显示 时间和身份选择 -->
+            <div class="layui-inline">
+                <label class="layui-form-label">办理时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="epTime" value='{{d.params.excuteproposalEntity.epTime||""}}'
+                        class="layui-input" id="epTime" placeholder="yyyy-MM-dd HH:mm:ss">
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label">处理人</label>
+                <div class="layui-input-inline">
+                    <select name="proNum" id="EditdepartSelect" lay-filter="EditdepartSelect">
+                        <option value='0' selected>无</option>
+                        {{#  layui.each(d.params.allProposer, function(index, item){ }}
+                        {{# if((d.params.excuteproposalEntity.proposerEntity) && d.params.excuteproposalEntity.proposerEntity.proNum == item["ProNum"] ) {  }}
+                        <option value='{{item["ProNum"]}}' selected>{{item['ProName']}}</option>
+                        {{# }else{ }}
+                        <option value='{{item["ProNum"]}}'>{{item['ProName']}}</option>
+                        {{# } }}
+                        {{#  }); }}
+                    </select>
+                </div>
+            </div>
+            {{# } }}
+
+            <div style=" display:none!important;"><input type="text" name="epId"
+                    value="{{ d.params.excuteproposalEntity.epId || 0 }}" disabled></div>
+            <div style=" display:none!important;"><input type="text" name="pId" value="{{ d.params.pId || 0 }}"
+                    disabled></div>
+            <div class="layui-form-item" style="margin: 20px 0 0 0;">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-inline">
+                    <input type="button" lay-submit lay-filter="form-edit-excuteProposal" value="提交" class="layui-btn">
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="templateOption" type="text/html">
+    {{#  layui.each(d.data, function(index, item){ }}
+    {{# if(d.select == item[d.value]){ }}
+    <option value='{{item[d.value]}}' selected>{{item[d.name]}}</option>
+    {{# }esle { }}
+    <option value='{{item[d.value]}}'>{{item[d.name]}}</option>
+    {{# } }}
+    {{#  }); }}
+</script>
+
+
+<script>
+    layui.use(['admin', 'form', 'upload', 'laydate'], function () {
+        var $ = layui.$,
+            form = layui.form,
+            laytpl = layui.laytpl,
+            laydate = layui.laydate;
+
+        var getAllProposer = function () {
+            let pid = $("#form-edit-proposal").data("pid");
+            console.log("PID+" + pid)
+        }
+
+        setTimeout(function () {
+            form.render();
+            let isInitValue = true;
+            if ($("#epTime").val() != "") {
+                isInitValue = false;
+            }
+
+            laydate.render({
+                elem: '#epTime',
+                type: 'datetime',
+                theme: 'molv',
+                value: new Date(),
+                isInitValue: isInitValue
+
+            });
+            console.log("render finish")
+        }, 400)
+
+
+    })
+</script>

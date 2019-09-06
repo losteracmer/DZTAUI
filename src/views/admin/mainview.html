@@ -1,0 +1,269 @@
+<title>提案视图</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>提案视图</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-content-list">
+      <div class="layui-form-item">
+        <!-- <div class="layui-inline">
+          <label class="layui-form-label">提案ID</label>
+          <div class="layui-input-inline">
+            <input type="text" name="pId" placeholder="请输入" autocomplete="off" class="layui-input">
+          </div>
+        </div> -->
+        <!-- 届 -->
+        <div class="layui-inline">
+          <label class="layui-form-label">届</label>
+          <div class="layui-input-inline">
+            <select id="periodSelect" name="periodId" lay-search="" lay-verify="required" lay-filter="periodSelect">
+
+            </select>
+          </div>
+        </div>
+        <!-- 次 -->
+        <div class="layui-inline">
+          <label class="layui-form-label">次</label>
+          <div class="layui-input-inline">
+            <select id="orderSelect" name="orderId" lay-search="" lay-verify="required" lay-filter="orderSelect">
+
+            </select>
+          </div>
+        </div>
+
+        <div class="layui-inline">
+          <label class="layui-form-label">提案人</label>
+          <div class="layui-input-inline">
+            <select name="proNum" id="proposerSelect" lay-search="" lay-verify="required" lay-filter="proposerSelect">
+
+            </select>
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">提案标题</label>
+          <div class="layui-input-inline">
+            <input type="text" name="pName" class="layui-input" lay-filter="pNameInput">
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">主办单位</label>
+          <div class="layui-input-inline">
+            <select name="departId" id="departSelect" lay-search="" lay-verify="required" lay-filter="departSelect">
+
+            </select>
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">提案状态</label>
+          <div class="layui-input-inline">
+            <select name="proStatus" id="proStatusSelect" lay-search="" lay-filter="proStatusSelect">
+              <option value="-1">全部</option>
+              <option value="0">待审</option>
+              <option value="1">立案</option>
+              <option value="2">建议</option>
+              <option value="3">无效</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="layui-inline">
+          <label class="layui-form-label">提案流程</label>
+          <div class="layui-input-inline">
+            <select name="proStep" id="proStepSelect" lay-search="" lay-filter="proStepSelect">
+              <option value="0">全部</option>
+              <option value="1">提出提案</option>
+              <option value="2">审批完成</option>
+              <option value="3">签发完成</option>
+              <option value="4">审核通过</option>
+              <option value="5">处理完成</option>
+              <option value="6">完成提案</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="layui-inline">
+          <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-card-body">
+      <div style="padding-bottom: 10px;">
+        
+        <button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
+        <button class="layui-btn layuiadmin-btn-list" data-type="exports">批量导出</button>
+      </div>
+      <table id="admin-proposal-list" lay-filter="admin-proposal-list"></table>
+      <script type="text/html" id="buttonTpl">
+        {{#  if(d.step == 1){ }}
+        <button class="layui-btn layui-btn-primary layui-btn-xs"><i class="layui-icon">&#xe6b2;</i>提出提案</button>
+        {{#  } else if(d.step == 2) { }}
+        <button class="layui-btn  layui-btn-warm layui-btn-xs"><i class="layui-icon">&#xe679;</i>审批完成</button>
+        {{#  } else if(d.step == 3) { }}
+        <button class="layui-btn layui-btn-normal layui-btn-xs"><i class="layui-icon">&#xe66e;</i>签发完成</button>
+        {{#  } else if(d.step == 4) { }}
+        <button class="layui-btn layui-btn-normal layui-btn-xs"><i class="layui-icon">&#xe672;</i>审核通过</button>
+        {{#  } else if(d.step == 5) { }}
+        <button class="layui-btn layui-btn layui-btn-xs"><i class="layui-icon">&#xe66c;</i>处理完成</button>
+        {{#  } else if(d.step == 6) { }}
+        <button class="layui-btn  layui-btn-xs"><i class="layui-icon">&#xe6c6;</i>完成提案</button>
+        {{#  } }}
+      </script>
+      <script type="text/html" id="buttonStatusTpl">
+        {{#  if(d.status == 1){ }}
+        <button class="layui-btn  layui-btn-xs"></i>立案</button>
+        {{#  } else if(d.status == 2) { }}
+        <button class="layui-btn  layui-btn-normal layui-btn-xs"></i>建议</button>
+        {{#  } else if(d.status == 3) { }}
+        <button class="layui-btn layui-btn-danger layui-btn-xs"></i>无效</button>
+        {{#  } else if(d.status == 0) { }}
+        <button class="layui-btn layui-btn-primary layui-btn-xs"></i>待审</button>
+        {{#  } }}
+      </script>
+      <script type="text/html" id="table-content-list">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+            class="layui-icon layui-icon-edit"></i>查看</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+            class="layui-icon layui-icon-delete"></i>删除</a>
+      </script>
+    </div>
+  </div>
+</div>
+
+<script id="templateOption" type="text/html">
+  {{#  layui.each(d.data, function(index, item){ }}
+  <option value='{{item[d.value]}}'>{{item[d.name]}}</option>
+  {{#  }); }}
+</script>
+<script>
+  layui.use('mainview', layui.factory('mainview')).use(['admin', 'mainview', 'table', 'yyer'], function () {
+    var $ = layui.$,
+      admin = layui.admin,
+      view = layui.view,
+      table = layui.table,
+      form = layui.form,
+      yyer = layui.yyer;
+    form.render(null, 'app-content-list');
+
+    //定义方法
+    var exportsProposals = function(data,cb){
+      let pid = data.pId;
+      layer.msg("正在导出...")
+      console.log("导出"+pid)
+    // alert("导出")
+      var url = "../public/exportProposal";
+      var form = $("<form></form>").attr("action", url).attr("method", "post");
+      form.append($("<input></input>").attr("type", "hidden").attr("name", "pid").attr("value", pid));
+      form.appendTo('body').submit().remove();
+      cb instanceof Function? cb():"";
+    }
+
+    //监听搜索
+    form.on('submit(LAY-app-contlist-search)', function (data) {
+      var field = data.field;
+
+      //执行重载
+      table.reload('admin-proposal-list', {
+        where: field,
+        page: {
+          curr: 1
+        } //表格重载的时候要将page的初始页设为1，否则可能会因为页数过大，而显示没有相关数据，这是layui的锅
+      });
+    });
+
+    var active = {
+      exports: function () {
+          var checkStatus = table.checkStatus('admin-proposal-list'),
+            checkData = checkStatus.data; //得到选中的数据
+          let pId = checkData.pId;
+          if (checkData.length === 0) {
+            return layer.msg('请先选中要导出行~');
+          }
+
+          layer.confirm('确定要导出吗，这个操作可能非常漫长！', function (index) {
+
+            //执行 Ajax 后重载
+            // for(let i =0;i<checkData.length;i++){
+            //   if(i == checkData.length - 1)
+            //     exportsProposals(checkData[i]);
+            //   else
+            //     exportsProposals(checkData[i],exportsProposals(checkData[i+1]))
+            // }
+            let itv ;
+            let i = 0;
+            itv = setInterval(function(){
+              if(i == checkData.length - 1){
+                clearInterval(itv);
+              }
+              exportsProposals(checkData[i]);
+              i++;
+            },400)
+            
+          });
+        }
+
+        //添加
+        ,
+      add: function (othis) {
+        admin.req({
+          url: './depart/allDepartAndAllProposer',
+          type: "post",
+
+          success: function (res) {
+
+            if (res.code != 0) {
+              return;
+            }
+            let data = {};
+            data['allDepart'] = res.data['allDepart'];
+            data['allProposer'] = res.data['allProposer'];
+            data['proposerEntity'] = res.data['nowPorposer'];
+            yyer.open({
+              title: '发布提案',
+              WID: 'creatProposalWin',
+              success: function (layero, index) {
+                layui.data.render = form.render();
+                view(this.id).render('windows/proposalEditWin', data).done(function () {
+                  form.render();
+                });
+                //监听提交
+                form.on('submit(form-edit-proposal)', function (data) {
+                  var field = data.field; //获取提交的字段
+                  admin.req({
+                    url: "./proposal/editProposal",
+                    data: field,
+                    type: "POST",
+                    success: function (res) {
+                      if (res.code != 0) return;
+                      layer.msg(res.msg, {
+                        icon: 1
+                      });
+                      table.reload("admin-proposal-list");
+                      layer.close(index);
+                    }
+                  })
+
+                  
+                });
+                
+              }
+            })
+          }
+        })
+      }
+    };
+
+    $('.layui-btn.layuiadmin-btn-list').on('click', function () {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+  });
+</script>

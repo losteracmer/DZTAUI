@@ -1,0 +1,190 @@
+<title>设置我的资料</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">用户</a>
+    
+    <a><cite>基本资料</cite></a>
+  </div>
+</div>
+<script>
+  //解决IE的问题
+  if (!Function.prototype.apply) {
+    Function.prototype.apply = function (obj, args) {
+      obj = obj == undefined ? window : Object(obj); //obj可以是js基本类型 
+      var i = 0,
+        ary = [],
+        str;
+      if (args) {
+        for (len = args.length; i < len; i++) {
+          ary[i] = "args[" + i + "]";
+        }
+      }
+      obj._apply = this;
+      str = 'obj._apply(' + ary.join(',') + ')';
+      try {
+        return eval(str);
+      } catch (e) {} finally {
+        delete obj._apply;
+      }
+    };
+  }
+  if (!Function.prototype.call) {
+    Function.prototype.call = function (obj) {
+      var i = 1,
+        args = [];
+      for (len = arguments.length; i < len; i++) {
+        args[i - 1] = arguments[i];
+      }
+      return this.apply(obj, args);
+    };
+  }
+  
+</script> 
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">设置我的资料</div>
+        <div class="layui-card-body" pad15>
+
+          <div class="layui-form" lay-filter="userInfo">
+            <div class="layui-form-item">
+              <label class="layui-form-label">我的角色</label>
+              <div class="layui-input-block" id="typeCheckBox">
+
+              </div>
+              <div class="layui-form-mid layui-word-aux">当前角色不可更改为其它角色</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">工号</label>
+              <div class="layui-input-inline">
+                <input id="proNum" type="text" name="proNum" value="xianxin" readonly class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">不可修改。一般用于后台登入名</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">姓名</label>
+              <div class="layui-input-inline">
+                <input id="proName" type="text" name="proName" value=""  autocomplete="off" placeholder="不可修改"
+                  class="layui-input" readonly>
+              </div>
+              <div class="layui-form-mid layui-word-aux">如若有误，请联系管理员修改</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">单位</label>
+              <div class="layui-input-inline">
+                <input id="departName" type="text" name="departName" value=""  autocomplete="off" placeholder="不可修改"
+                  class="layui-input" readonly>
+              </div>
+              <div class="layui-form-mid layui-word-aux">如若有误，请联系管理员修改</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">性别</label>
+              <div class="layui-input-block">
+                <input id="proSexN" type="radio" name="proSex" value="男" title="男">
+                <input id="proSexV" type="radio" name="proSex" value="女" title="女">
+              </div>
+            </div>
+
+            <!-- <div class="layui-form-item">
+              <label class="layui-form-label">头像</label>
+              <div class="layui-input-inline">
+                <input name="avatar" lay-verify="required" id="LAY_avatarSrc" placeholder="图片地址" value="http://cdn.layui.com/avatar/168.jpg" class="layui-input">
+              </div>
+              <div class="layui-input-inline layui-btn-container" style="width: auto;">
+                <button type="button" class="layui-btn layui-btn-primary" id="LAY_avatarUpload">
+                  <i class="layui-icon">&#xe67c;</i>上传图片
+                </button>
+                <button class="layui-btn layui-btn-primary" layadmin-event="avartatPreview">查看图片</button >
+              </div>
+           </div> -->
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">邮箱</label>
+              <div class="layui-input-inline">
+                <input id="proEmail" type="text" name="proEmail" value=""  autocomplete="off" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">建议填写，可用于找回密码</div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+              <label class="layui-form-label">备注</label>
+              <div class="layui-input-block">
+                <textarea id="proRemark" name="proRemark" placeholder="选填" class="layui-textarea"></textarea>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="setmyinfo">确认修改</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重新填写</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script type="text/html" id="typeCheckBoxTemplate">
+  {{#  layui.each(d.data, function(index, item){ }}
+  <input type="checkbox" name="type" value={{item.userType}} title={{d.types[item.userType]}} disabled checked>
+  {{#  }); }}
+
+  <!-- <input type="checkbox" name="type" value="0" title="职工代表" checked>
+  <input type="checkbox" name="type" value="0" title="委员会成员">
+  <input type="checkbox" name="type" value="0" title="委员会主任">
+  <input type="checkbox" name="type" value="0" title="校办主任">
+  <input type="checkbox" name="type" value="0" title="主管校领导">
+  <input type="checkbox" name="type" value="0" title="单位负责人"> -->
+</script>
+
+<script>
+  var types = ["zero","管理员","职工代表","委员会成员","委员会主任","校办主任","主管校领导","单位负责人"];
+  layui.use('set', layui.factory('set')).use([ 'admin', 'view', 'layer','laytpl','form'], function () {
+    // alert("ok");
+  var admin = layui.admin
+  ,view = layui.view
+  ,layer = layui.layer
+  ,laytpl = layui.laytpl
+  ,form = layui.form
+  ,$ = layui.$;
+    admin.req({
+      url: './user/getUserMsg',
+      type: "POST",
+      success: function (res) {
+        //  layer.msg(JSON.stringify(res));
+        if (res.code != 0) {
+          layer.msg(res.msg);
+          return;
+        }
+        laytpl(typeCheckBoxTemplate.innerHTML).render({
+          data: res.data.protypeEntitySet,
+          admin: false,
+          types:types
+        }, function(htmls) {
+          //console.log("lesson:"+htmls)
+          $("#typeCheckBox").html( htmls);
+          form.render();
+        })
+        $("#proNum").val(res.data.proNum);
+        $("#proName").val(res.data.proName);
+        $("#proEmail").val(res.data.proEmail);
+        $("#proRemark").val(res.data.proRemark);
+        $("#departName").val(res.data.departEntity.departName);
+        if(res.data.proSex.indexOf('男')!= -1){
+          $("#proSexN").attr('checked', 'true')
+        }else {
+          $("#proSexV").attr('checked', 'true')
+        }
+        form.render();
+
+      }
+    })
+
+  });
+</script>

@@ -1,0 +1,290 @@
+<title>网站用户</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>设置</cite></a>
+    <a><cite>用户设置</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="layadmin-userfront-formlist">
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">工号</label>
+          <div class="layui-input-block">
+            <input type="text" name="proNum" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">姓名</label>
+          <div class="layui-input-block">
+            <input type="text" name="proName" placeholder="" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+        <div class="layui-inline">
+          <label class="layui-form-label">身份</label>
+          <div class="layui-input-block">
+            <select name="type">
+              <option value="0">不限</option>
+              <option value="1">管理员</option>
+              <option value="2">教职工代表</option>
+              <option value="3">委员会成员</option>
+              <option value="4">委员主任</option>
+              <option value="5">校办主任</option>
+              <option value="6">主管校领导</option>
+              <option value="7">单位负责人</option>
+            </select>
+          </div>
+        </div>
+        <div class="layui-inline">
+          <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search">
+            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-card-body">
+      <div style="padding-bottom: 10px;">
+        <button class="layui-btn layuiadmin-btn-useradmin" data-type="add">添加</button>
+      </div>
+
+      <table id="proposer-table" lay-filter="proposer-table"></table>
+      <script type="text/html" id="imgTpl">
+        <img style="display: inline-block; width: 50%; height: 100%;" src={{ d.avatar }}>
+      </script>
+      <script type="text/html" id="table-useradmin-webuser">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+            class="layui-icon layui-icon-edit"></i>编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+            class="layui-icon layui-icon-delete"></i>删除</a>
+      </script>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  //解决IE的问题
+  if (!Function.prototype.apply) {
+    Function.prototype.apply = function (obj, args) {
+      obj = obj == undefined ? window : Object(obj); //obj可以是js基本类型 
+      var i = 0,
+        ary = [],
+        str;
+      if (args) {
+        for (len = args.length; i < len; i++) {
+          ary[i] = "args[" + i + "]";
+        }
+      }
+      obj._apply = this;
+      str = 'obj._apply(' + ary.join(',') + ')';
+      try {
+        return eval(str);
+      } catch (e) {} finally {
+        delete obj._apply;
+      }
+    };
+  }
+  if (!Function.prototype.call) {
+    Function.prototype.call = function (obj) {
+      var i = 1,
+        args = [];
+      for (len = arguments.length; i < len; i++) {
+        args[i - 1] = arguments[i];
+      }
+      return this.apply(obj, args);
+    };
+  }
+  
+</script>
+
+
+<script>
+  layui.use('useradmin', layui.factory('useradmin')).use(['admin', 'useradmin', 'table', 'yyer', 'proTable'],
+    function () {
+      var $ = layui.$,
+        admin = layui.admin,
+        view = layui.view,
+        table = layui.table,
+        form = layui.form,
+        yyer = layui.yyer,
+        proTable = layui.proTable;
+
+      form.render(null, 'layadmin-userfront-formlist');
+
+      //监听搜索
+      form.on('submit(LAY-user-front-search)', function (data) {
+        var field = data.field;
+
+        //执行重载
+        table.reload('proposer-table', {
+          where: field,
+          page: {
+          curr: 1
+        } //表格重载的时候要将page的初始页设为1，否则可能会因为页数过大，而显示没有相关数据，这是layui的锅
+        });
+      });
+
+      proTable.renderOnly({
+        elem: '#proposer-table',
+        url: './proposer/allProposer' //模拟接口
+          ,
+        cols: [
+          [{
+            field: 'proNum',
+            title: '工号',
+            sort: true
+          }, {
+            field: 'proName',
+            title: '姓名'
+          }, {
+            field: 'proSex',
+            title: '性别'
+          }, {
+            field: 'departName',
+            title: '单位'
+          }, {
+            field: 'proEmail',
+            title: '邮箱'
+          }, {
+            title: '操作',
+            align: 'center',
+            fixed: 'right',
+            toolbar: '#table-useradmin-webuser'
+          }]
+        ],
+        parseData: function (res) {
+          let data = res.data;
+
+          data.forEach(function(e) {
+            e.departName = e.departEntity.departName;
+            e.proEmail = e.proEmail;
+            e.proName = e.proName;
+          })
+          console.log("解析完成")
+        },
+        page: true,
+        limit: 15,
+
+        text: {
+          none: '暂无相关数据'
+        }
+      });
+
+      //事件
+      var active = {
+
+        add: function () {
+          let data = {};
+          admin.req({
+            url: 'depart/allDepart',
+
+            success: function (res) {
+              data.allDepart = res.data.allDepart;
+              yyer.open({
+                title: '添加用户',
+                WID: 'add-proposer',
+                success: function (layero, index) {
+                  view(this.id).render('windows/proposerEditWin', data).done(function () {
+                    form.render(null, 'userInfo');
+
+                    //监听提交
+                    form.on('submit(setmyinfo)', function (data) {
+                      var field = data.field; //获取提交的字段
+                      console.log("提交")
+                      //提交 Ajax 成功后，关闭当前弹层并重载表格
+                      admin.req({
+                        url: "./proposer/editProposer",
+                        data: field,
+                        success: function (res) {
+                            layer.msg(res.msg||"",{icon:1})
+                        }
+                      })
+                      layui.table.reload('proposer-table'); //重载表格
+                      layer.close(index); //执行关闭 
+                    });
+                  });
+                }
+              });
+            }
+          })
+
+        }
+      };
+
+      $('.layui-btn.layuiadmin-btn-useradmin').on('click', function () {
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+      });
+
+
+      //监听工具条
+      table.on('tool(proposer-table)', function (obj) {
+        var data = obj.data;
+        if (obj.event === 'del') {
+          layer.prompt({
+            formType: 1,
+            title: '敏感操作，请验证口令'
+          }, function (value, index) {
+            layer.close(index);
+            if (value != "losteracmer") return;
+            layer.confirm('真的删除行么', function (index) {
+              obj.del();
+              //发送数据
+              admin.req({
+                url: "/proposer/deleteProposer",
+                data: {
+                  proNum: data.proNum
+                },
+                success: function (res) {
+                  layer.msg(res.msg || "", {
+                    icon: 1
+                  });
+                }
+              })
+              layer.close(index);
+            });
+          });
+        } else if (obj.event === 'edit') {
+          admin.req({
+            url: 'depart/allDepart',
+
+            success: function (res) {
+              data.allDepart = res.data.allDepart;
+              yyer.open({
+                title: '编辑用户',
+                WID: 'add-proposer',
+                success: function (layero, index) {
+                  view(this.id).render('windows/proposerEditWin', data).done(function () {
+                    form.render(null, 'userInfo');
+
+                    //监听提交
+                    form.on('submit(setmyinfo)', function (data) {
+                      var field = data.field; //获取提交的字段
+                      console.log("提交")
+                      //提交 Ajax 成功后，关闭当前弹层并重载表格
+                      admin.req({
+                        url: "./proposer/editProposer",
+                        data: field,
+                        success: function (res) {
+
+                        }
+                      })
+                      layui.table.reload('proposer-table'); //重载表格
+                      layer.close(index); //执行关闭 
+                    });
+                  });
+                }
+              });
+            }
+          })
+        }
+      });
+
+    });
+</script>

@@ -1,0 +1,155 @@
+<script type="text/html" template>
+    <div class="layui-fluid">
+        <div class="layui-form" id="form-edit-ausstellung" lay-filter="form-edit-ausstellung"
+            style="padding: 20px 0 0 0;" data-pid={{d.params.pId}}>
+            <div class="layui-form-item">
+                {{# d.params.ausstellungEntity =  d.params.ausstellungEntity?d.params.ausstellungEntity:{} }}
+                <label class="layui-form-label">主办单位</label>
+                <div class="layui-input-inline">
+                    <select name="depart1" id="EditdepartSelect" lay-filter="EditdepartSelect">
+                        <option value='0' selected>无</option>
+                        {{#  layui.each(d.params.allDepart, function(index, item){ }}
+                        {{# if((d.params.ausstellungEntity.departEntity1) && d.params.ausstellungEntity.departEntity1.departId == item["departId"] ) {  }}
+                        <option value='{{item["departId"]}}' selected>{{item['departName']}}</option>
+                        {{# }else{ }}
+                        <option value='{{item["departId"]}}'>{{item['departName']}}</option>
+                        {{# } }}
+                        {{#  }); }}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">协办单位1</label>
+                    <div class="layui-input-inline">
+                        <select name="depart2" id="EditdepartSelect" lay-filter="EditdepartSelect">
+                            <option value='0' selected>无</option>
+                            {{#  layui.each(d.params.allDepart, function(index, item){ }}
+                            {{# if((d.params.ausstellungEntity.departEntity2) && d.params.ausstellungEntity.departEntity2.departId == item["departId"] ) {  }}
+                            <option value='{{item["departId"]}}' selected>{{item['departName']}}</option>
+                            {{# }else{ }}
+                            <option value='{{item["departId"]}}'>{{item['departName']}}</option>
+                            {{# } }}
+                            {{#  }); }}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">协办单位2</label>
+                    <div class="layui-input-inline">
+                        <select name="depart3" id="EditdepartSelect" lay-filter="EditdepartSelect">
+                            <option value='0' selected>无</option>
+                            {{#  layui.each(d.params.allDepart, function(index, item){ }}
+                            {{# if((d.params.ausstellungEntity.departEntity3) && d.params.ausstellungEntity.departEntity3.departId == item["departId"] ) {  }}
+                            <option value='{{item["departId"]}}' selected>{{item['departName']}}</option>
+                            {{# }else{ }}
+                            <option value='{{item["departId"]}}'>{{item['departName']}}</option>
+                            {{# } }}
+                            {{#  }); }}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">协办单位3</label>
+                    <div class="layui-input-inline">
+                        <select name="depart4" id="EditdepartSelect" lay-filter="EditdepartSelect">
+                            <option value='0' selected>无</option>
+                            {{#  layui.each(d.params.allDepart, function(index, item){ }}
+                            {{# if((d.params.ausstellungEntity.departEntity4) && d.params.ausstellungEntity.departEntity4.departId == item["departId"] ) {  }}
+                            <option value='{{item["departId"]}}' selected>{{item['departName']}}</option>
+                            {{# }else{ }}
+                            <option value='{{item["departId"]}}'>{{item['departName']}}</option>
+                            {{# } }}
+                            {{#  }); }}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {{# var type = layui.data(layui.setter.tableName)['type']; }}
+            {{# if(type.indexOf(1)>-1){ }}
+            <!-- //如果是管理身份，才给与显示 时间和身份选择 -->
+            <div class="layui-inline">
+                <label class="layui-form-label">签发时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="aTime" value='{{d.params.ausstellungEntity.aTime||""}}' class="layui-input"
+                        id="aTime" placeholder="yyyy-MM-dd HH:mm:ss">
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label">处理人</label>
+                <div class="layui-input-inline">
+                    <select name="proNum" id="EditdepartSelect" lay-filter="EditdepartSelect">
+                        <option value='0' selected>无</option>
+                        {{#  layui.each(d.params.allProposer, function(index, item){ }}
+                        {{# if((d.params.ausstellungEntity.proposerEntity) && d.params.ausstellungEntity.proposerEntity.proNum == item["ProNum"] ) {  }}
+                        <option value='{{item["ProNum"]}}' selected>{{item['ProName']}}</option>
+                        {{# }else{ }}
+                        <option value='{{item["ProNum"]}}'>{{item['ProName']}}</option>
+                        {{# } }}
+                        {{#  }); }}
+                    </select>
+                </div>
+            </div>
+            {{# } }}
+
+            <div style=" display:none!important;"><input type="text" name="aId"
+                    value="{{ d.params.ausstellungEntity.aId || 0 }}" disabled></div>
+            <div style=" display:none!important;"><input type="text" name="pId" value="{{ d.params.pId || 0 }}"
+                    disabled></div>
+            <div class="layui-form-item" style="margin: 20px 0 0 0;">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-inline">
+                    <input type="button" lay-submit lay-filter="form-edit-ausstellung" value="提交" class="layui-btn">
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="templateOption" type="text/html">
+    {{#  layui.each(d.data, function(index, item){ }}
+    {{# if(d.select == item[d.value]){ }}
+    <option value='{{item[d.value]}}' selected>{{item[d.name]}}</option>
+    {{# }esle { }}
+    <option value='{{item[d.value]}}'>{{item[d.name]}}</option>
+    {{# } }}
+    {{#  }); }}
+</script>
+
+
+<script>
+    layui.use(['admin', 'form', 'upload', 'laydate'], function () {
+        var $ = layui.$,
+            form = layui.form,
+            laytpl = layui.laytpl,
+            laydate = layui.laydate;
+
+        var getAllProposer = function () {
+            let pid = $("#form-edit-proposal").data("pid");
+            console.log("PID+" + pid)
+        }
+
+        setTimeout(function () {
+            form.render();
+            let isInitValue = true;
+            if ($("#aTime").val() != "") {
+                isInitValue = false;
+            }
+
+            laydate.render({
+                elem: '#aTime',
+                type: 'datetime',
+                theme: 'molv',
+                value: new Date(),
+                isInitValue: isInitValue
+
+            });
+            console.log("render finish")
+        }, 400)
+
+
+    })
+</script>

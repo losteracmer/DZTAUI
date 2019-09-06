@@ -1,0 +1,101 @@
+<script type="text/html" template>
+    <div class="layui-fluid">
+        <div class="layui-form " id="form-edit-approval" lay-filter="form-edit-approval" style="padding: 20px 0 0 0;"
+            data-pid={{d.params.pId}}>
+            <div class="layui-form-item">
+                <label class="layui-form-label">校领导意见</label>
+                <div class="layui-input-block">
+                    {{# d.params.approvalEntity =  d.params.approvalEntity?d.params.approvalEntity:{} }}
+                    <!-- //防止 空指针异常 -->
+
+                    <textarea name="avIdea" placeholder="请输入意见"
+                        class="layui-textarea">{{d.params.approvalEntity.avIdea || '同意审批'}}</textarea>
+
+                </div>
+            </div>
+            {{# var type = layui.data(layui.setter.tableName)['type']; }}
+            {{# if(type.indexOf(1)>-1){ }}
+            <!-- //如果是管理身份，才给与显示 时间和身份选择 -->
+            <div class="layui-inline">
+                <label class="layui-form-label">审核时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="avTime" value='{{d.params.approvalEntity.avTime||""}}' class="layui-input"
+                        id="avTime" placeholder="yyyy-MM-dd HH:mm:ss">
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label">处理人</label>
+                <div class="layui-input-inline">
+                    <select name="proNum" id="EditdepartSelect" lay-filter="EditdepartSelect">
+                        <option value='0' selected>无</option>
+                        {{#  layui.each(d.params.allProposer, function(index, item){ }}
+                        {{# if((d.params.approvalEntity.proposerEntity) && d.params.approvalEntity.proposerEntity.proNum == item["ProNum"] ) {  }}
+                        <option value='{{item["ProNum"]}}' selected>{{item['ProName']}}</option>
+                        {{# }else{ }}
+                        <option value='{{item["ProNum"]}}'>{{item['ProName']}}</option>
+                        {{# } }}
+                        {{#  }); }}
+                    </select>
+                </div>
+            </div>
+            {{# } }}
+
+            <div style=" display:none!important;"><input type="text" name="avId"
+                    value="{{ d.params.approvalEntity.avId || 0 }}" disabled></div>
+            <div style=" display:none!important;"><input type="text" name="pId" value="{{ d.params.pId || 0 }}"
+                    disabled></div>
+            <div class="layui-form-item" style="margin: 20px 0 0 0;">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-inline">
+                    <input type="button" lay-submit lay-filter="form-edit-approval" value="提交" class="layui-btn">
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="templateOption" type="text/html">
+    {{#  layui.each(d.data, function(index, item){ }}
+    {{# if(d.select == item[d.value]){ }}
+    <option value='{{item[d.value]}}' selected>{{item[d.name]}}</option>
+    {{# }esle { }}
+    <option value='{{item[d.value]}}'>{{item[d.name]}}</option>
+    {{# } }}
+    {{#  }); }}
+</script>
+
+
+<script>
+    layui.use(['admin', 'form', 'upload', 'laydate'], function () {
+        var $ = layui.$,
+            form = layui.form,
+            laytpl = layui.laytpl,
+            laydate = layui.laydate;
+
+        var getAllProposer = function () {
+            let pid = $("#form-edit-proposal").data("pid");
+
+        }
+
+        setTimeout(function () {
+            form.render();
+            let isInitValue = true;
+            if ($("#avTime").val() != "") {
+                isInitValue = false;
+            }
+
+            laydate.render({
+                elem: '#avTime',
+                type: 'datetime',
+                theme: 'molv',
+                value: new Date(),
+                isInitValue: isInitValue
+
+            });
+
+        }, 400)
+
+
+    })
+</script>

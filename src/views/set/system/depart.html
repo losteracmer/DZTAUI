@@ -1,0 +1,235 @@
+<title>单位设置</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>设置</cite></a>
+    <a><cite>单位设置</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+
+    <div class="layui-card-body">
+      <div style="padding-bottom: 10px;">
+        <button class="layui-btn layuiadmin-btn-admin" data-type="add">添加</button>
+      </div>
+
+      <table id="depart-table" lay-filter="depart-table"></table>
+
+      <script type="text/html" id="table-useradmin-admin">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+            class="layui-icon layui-icon-edit"></i>编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+            class="layui-icon layui-icon-delete"></i>删除</a>
+      </script>
+    </div>
+  </div>
+</div>
+
+<script>
+
+ //解决IE的问题
+ if (!Function.prototype.apply) {
+    Function.prototype.apply = function (obj, args) {
+      obj = obj == undefined ? window : Object(obj);//obj可以是js基本类型 
+      var i = 0, ary = [], str;
+      if (args) {
+        for (len = args.length; i < len; i++) {
+          ary[i] = "args[" + i + "]";
+        }
+      }
+      obj._apply = this;
+      str = 'obj._apply(' + ary.join(',') + ')';
+      try {
+        return eval(str);
+      } catch (e) {
+      } finally {
+        delete obj._apply;
+      }
+    };
+  }
+  if (!Function.prototype.call) {
+    Function.prototype.call = function (obj) {
+      var i = 1, args = [];
+      for (len = arguments.length; i < len; i++) {
+        args[i - 1] = arguments[i];
+      }
+      return this.apply(obj, args);
+    };
+  }
+ 
+
+</script>
+
+<script>
+  layui.use('useradmin', layui.factory('useradmin')).use(['admin', 'useradmin', 'table', 'yyer', 'proTable'],
+  function () {
+    var $ = layui.$,
+      admin = layui.admin,
+      view = layui.view,
+      table = layui.table,
+      form = layui.form,
+      yyer = layui.yyer,
+      laydate = layui.laydate,
+      proTable = layui.proTable;
+
+    form.render(null, 'depart-form');
+
+    //监听搜索
+    form.on('submit(LAY-user-back-search)', function (data) {
+      var field = data.field;
+
+      //执行重载
+      table.reload('LAY-user-back-manage', {
+        where: field
+      });
+    });
+    proTable.renderOnly({
+      elem: '#depart-table',
+      url: './depart/allList' //模拟接口
+        ,
+      cols: [
+        [{
+          field: 'departId',
+          width: 100,
+          title: 'ID',
+          sort: true
+        }, {
+          field: 'departName',
+          title: '部门名称',
+          minWidth: 100
+        }, {
+          field: 'departRemark',
+          title: '备注信息',
+          width: 100
+        }, {
+          title: '操作',
+          width: 150,
+          align: 'center',
+          fixed: 'right',
+          toolbar: '#table-useradmin-admin'
+        }]
+      ],
+
+      page: true,
+
+      text: {
+        none: "暂时没有数据"
+      }
+    });
+
+    //事件
+    var active = {
+      add: function () {
+
+        yyer.open({
+          title: '添加新部门',
+          area: ['420px', '450px'],
+          id: 'depart-add-windows',
+          success: function (layero, index) {
+
+            view(this.id).render('set/system/departEditWin', {}).done(
+              function () {
+                form.render(null, 'add-depart-form');
+
+                //监听提交
+                form.on('submit(LAY-user-back-submit)', function (data) {
+                  var field = data.field; //获取提交的字段
+
+                  //提交 Ajax 成功后，关闭当前弹层并重载表格
+                  admin.req({
+                    url: '/depart/editDepart',
+                    data: field,
+                    success: function (res) {
+                      layer.msg(res.msg || "", {
+                        icon: 1
+                      });
+                      layui.table.reload('depart-table'); //重载表格
+                    }
+                  })
+
+                  layer.close(index); //执行关闭 
+                });
+              });
+
+          }
+        })
+
+
+      }
+
+    }
+    $('.layui-btn.layuiadmin-btn-admin').on('click', function () {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+    //监听工具条
+    table.on('tool(depart-table)', function (obj) {
+      var data = obj.data;
+      if (obj.event === 'del') {
+        layer.prompt({
+          formType: 1,
+          title: '敏感操作，请验证口令'
+        }, function (value, index) {
+          if (value != "losteracmer"){
+            layer.close(index);
+            return ;
+          }
+          layer.close(index);
+
+
+          layer.confirm('真的删除行么', function (index) {
+            //执行操作
+            admin.req({
+              url:"/depart/deleteDepart",
+              data:data,
+              success:function(res){
+                layer.msg(res.msg||"",{icon:1})
+              }
+            })
+            obj.del();
+            layer.close(index);
+          });
+        });
+      } else if (obj.event === 'edit') {
+
+        yyer.open({
+          title: '编辑部门',
+          area: ['420px', '450px'],
+          id: 'order-add-windows',
+          success: function (layero, index) {
+            //设置id
+
+            view(this.id).render('set/system/departEditWin', data).done(
+              function () {
+                form.render(null, 'add-order-form');
+
+                //监听提交
+                form.on('submit(LAY-user-back-submit)', function (data) {
+                  var field = data.field; //获取提交的字段
+
+                  //提交 Ajax 成功后，关闭当前弹层并重载表格
+                  admin.req({
+                    url: '/depart/editDepart',
+                    data: field,
+                    success: function (res) {
+                      layer.msg(res.msg || "", {
+                        icon: 1
+                      });
+                      layui.table.reload('depart-table'); //重载表格
+                    }
+                  })
+
+                  layer.close(index); //执行关闭 
+                });
+              });
+          }
+        });
+      }
+    })
+
+  });
+</script>
