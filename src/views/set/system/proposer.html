@@ -100,7 +100,6 @@
       return this.apply(obj, args);
     };
   }
-  
 </script>
 
 
@@ -125,8 +124,8 @@
         table.reload('proposer-table', {
           where: field,
           page: {
-          curr: 1
-        } //表格重载的时候要将page的初始页设为1，否则可能会因为页数过大，而显示没有相关数据，这是layui的锅
+            curr: 1
+          } //表格重载的时候要将page的初始页设为1，否则可能会因为页数过大，而显示没有相关数据，这是layui的锅
         });
       });
 
@@ -161,7 +160,7 @@
         parseData: function (res) {
           let data = res.data;
 
-          data.forEach(function(e) {
+          data.forEach(function (e) {
             e.departName = e.departEntity.departName;
             e.proEmail = e.proEmail;
             e.proName = e.proName;
@@ -202,7 +201,9 @@
                         url: "./proposer/editProposer",
                         data: field,
                         success: function (res) {
-                            layer.msg(res.msg||"",{icon:1})
+                          layer.msg(res.msg || "", {
+                            icon: 1
+                          })
                         }
                       })
                       layui.table.reload('proposer-table'); //重载表格
@@ -272,11 +273,12 @@
                         url: "./proposer/editProposer",
                         data: field,
                         success: function (res) {
-
+                          //修改一下，先提交修改，在重载表格
+                          layui.table.reload('proposer-table'); //重载表格
+                          layer.close(index); //执行关闭 
                         }
                       })
-                      layui.table.reload('proposer-table'); //重载表格
-                      layer.close(index); //执行关闭 
+
                     });
                   });
                 }
