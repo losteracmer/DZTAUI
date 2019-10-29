@@ -90,6 +90,7 @@ layui.define(['laytpl', 'layer', 'table', 'setter'], function (exports) {
 
                     data.forEach(function( element ) {
                         element.proName = element.proposerEntity == null ? "未知" : element.proposerEntity.proName;
+                        element.proDepartName = element.proposerEntity == null ? "未知" : element.proposerEntity.departEntity.departName;
                         element.step = 6;
                         element.step = element.csiEntity == null ? 5 : 6;  //评价完成 
                         element.step = element.excuteproposalEntity == null ? 4 : element.step;  //执行提案

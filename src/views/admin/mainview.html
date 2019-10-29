@@ -95,12 +95,20 @@
     </div>
 
     <div class="layui-card-body">
-      <div style="padding-bottom: 10px;">
-        
-        <button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
-        <button class="layui-btn layuiadmin-btn-list" data-type="exports">批量导出</button>
-      </div>
+
+
+
       <table id="admin-proposal-list" lay-filter="admin-proposal-list"></table>
+
+
+      <script type="text/html" id="proOptionsBar">
+        <div class="layui-btn-container">
+          <button class="layui-btn layui-btn-sm" data-type="add" lay-event="add">添加</button>
+          <button class="layui-btn layui-btn-sm" data-type="exports" lay-event="exports">批量导出</button>
+        </div>
+      </script>
+
+
       <script type="text/html" id="buttonTpl">
         {{#  if(d.step == 1){ }}
         <button class="layui-btn layui-btn-primary layui-btn-xs"><i class="layui-icon">&#xe6b2;</i>提出提案</button>
@@ -153,17 +161,7 @@
     form.render(null, 'app-content-list');
 
     //定义方法
-    var exportsProposals = function(data,cb){
-      let pid = data.pId;
-      layer.msg("正在导出...")
-      console.log("导出"+pid)
-    // alert("导出")
-      var url = "../public/exportProposal";
-      var form = $("<form></form>").attr("action", url).attr("method", "post");
-      form.append($("<input></input>").attr("type", "hidden").attr("name", "pid").attr("value", pid));
-      form.appendTo('body').submit().remove();
-      cb instanceof Function? cb():"";
-    }
+    
 
     //监听搜索
     form.on('submit(LAY-app-contlist-search)', function (data) {
@@ -178,92 +176,13 @@
       });
     });
 
-    var active = {
-      exports: function () {
-          var checkStatus = table.checkStatus('admin-proposal-list'),
-            checkData = checkStatus.data; //得到选中的数据
-          let pId = checkData.pId;
-          if (checkData.length === 0) {
-            return layer.msg('请先选中要导出行~');
-          }
-
-          layer.confirm('确定要导出吗，这个操作可能非常漫长！', function (index) {
-
-            //执行 Ajax 后重载
-            // for(let i =0;i<checkData.length;i++){
-            //   if(i == checkData.length - 1)
-            //     exportsProposals(checkData[i]);
-            //   else
-            //     exportsProposals(checkData[i],exportsProposals(checkData[i+1]))
-            // }
-            let itv ;
-            let i = 0;
-            itv = setInterval(function(){
-              if(i == checkData.length - 1){
-                clearInterval(itv);
-              }
-              exportsProposals(checkData[i]);
-              i++;
-            },400)
-            
-          });
-        }
-
-        //添加
-        ,
-      add: function (othis) {
-        admin.req({
-          url: './depart/allDepartAndAllProposer',
-          type: "post",
-
-          success: function (res) {
-
-            if (res.code != 0) {
-              return;
-            }
-            let data = {};
-            data['allDepart'] = res.data['allDepart'];
-            data['allProposer'] = res.data['allProposer'];
-            data['proposerEntity'] = res.data['nowPorposer'];
-            yyer.open({
-              title: '发布提案',
-              WID: 'creatProposalWin',
-              success: function (layero, index) {
-                layui.data.render = form.render();
-                view(this.id).render('windows/proposalEditWin', data).done(function () {
-                  form.render();
-                });
-                //监听提交
-                form.on('submit(form-edit-proposal)', function (data) {
-                  var field = data.field; //获取提交的字段
-                  admin.req({
-                    url: "./proposal/editProposal",
-                    data: field,
-                    type: "POST",
-                    success: function (res) {
-                      if (res.code != 0) return;
-                      layer.msg(res.msg, {
-                        icon: 1
-                      });
-                      table.reload("admin-proposal-list");
-                      layer.close(index);
-                    }
-                  })
-
-                  
-                });
-                
-              }
-            })
-          }
-        })
-      }
-    };
-
-    $('.layui-btn.layuiadmin-btn-list').on('click', function () {
-      var type = $(this).data('type');
-      active[type] ? active[type].call(this) : '';
-    });
+    
+//更改为首部 toolbar
+    // $('.layui-btn.layuiadmin-btn-list').on('click', function () {
+    //   return;
+    //   var type = $(this).data('type');
+    //   active[type] ? active[type].call(this) : '';
+    // });
 
   });
 </script>
